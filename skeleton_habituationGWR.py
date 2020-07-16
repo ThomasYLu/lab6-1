@@ -23,9 +23,11 @@ dec=0.7 # set weight decrement for habituation
 pls=[0, 0, 1, 0, 0] # set up a pulse
 
 # TODO: then create a list of 6 pulses, called x, to use for input
-x = pls*6
+x = pls*6 + [0]*5 + pls*6
 
 v = stv # Set connection weight to start weight value
+
+forgetFlag = True # if true, allows slug to forget habituation
 
 ###############################
 # Set up and run simulation
@@ -57,6 +59,8 @@ for t in range(nTs):
 #        weight to habituate (decrease)
     if x[t]>0: # stimulation occurred
         v *= dec
+    if t>3 and sum(x[t-4:t+1]) == 0 and v<stv and forgetFlag:
+        v += (stv-v) * 0.05 # forget after lack of stimulus
 
 
 ###############################
